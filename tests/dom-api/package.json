@@ -1,0 +1,29 @@
+{
+  "name": "autopush-integration-test",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Autopush integration test that exercises the DOM API.",
+  "main": "index.js",
+  "scripts": {
+    "autopush": "marionette-mocha --host marionette-firefox-host --timeout 60s --runtime /Applications/Nightly.app/Contents/MacOS/firefox-bin test_*.js",
+    "autopush-ubuntu": "marionette-mocha --host marionette-firefox-host --timeout 60s --runtime /home/ubuntu/firefox/firefox-bin test_*.js",
+    "test": "marionette-mocha test_*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mozilla-services/services-test.git"
+  },
+  "author": "Kit Cambridge <kcambridge@mozilla.com>",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/mozilla-services/services-test/issues"
+  },
+  "homepage": "https://github.com/mozilla-services/services-test#readme",
+  "dependencies": {
+    "bluebird": "^3.3.5",
+    "express": "^4.13.4",
+    "marionette-client": "^1.9.5",
+    "marionette-firefox-host": "^1.0.4",
+    "marionette-js-runner": "^1.1.4"
+  }
+}

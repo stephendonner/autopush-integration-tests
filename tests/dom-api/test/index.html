@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/.  -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>autopush mocha integration tests</title>
+  <link rel="stylesheet" media="all" href="vendor/mocha-2.2.5.css">
+</head>
+<body>
+
+  <div id="mocha">
+    <p><a href="../">Index</a></p>
+  </div>
+  <div id="messages"></div>
+  <div id="fixtures"></div>
+
+  <script>
+    var uncaughtErrors = [];
+    window.addEventListener("error", error => {
+      uncaughtErrors.push(error);
+    });
+    var consoleWarn = console.warn;
+    var caughtWarnings = [];
+    console.warn = function(...args) {
+      caughtWarnings.push(args);
+      consoleWarn.apply(console, args);
+    };
+  </script>
+
+  <!-- test dependencies -->
+  <script src="vendor/mocha-2.2.5.js"></script>
+  <script src="vendor/chai-3.0.0.js"></script>
+  <script src="vendor/co-browser.js"></script>
+  <script src="vendor/webcrypto-push-encryption.js"></script>
+  <script src="util.js"></script>
+  <script>
+    chai.config.includeStack = true;
+    mocha.setup({ui: 'bdd', timeout: 10000});
+  </script>
+
+  <!-- Test scripts -->
+  <script src="test_data.js"></script>
+  <script src="test_subscription.js"></script>
+
+  <script>
+    function getMessages(selector) {
+      return Array.from(document.querySelectorAll(selector)).map(
+        element => element.textContent);
+    }
+
+    describe("Uncaught Error Check", _ => {
+      it("should load the tests without errors", () => {
+        chai.assert.equal(uncaughtErrors.length, 0);
+      });
+    });
+
+    describe("Unexpected Warnings Check", _ => {
+      it("should log only the warnings we expect", () => {
+        chai.assert.equal(caughtWarnings.length, 0);
+      });
+    });
+
+    mocha.run(() => {
+      // Notify the Marionette harness when the tests finish running.
+      document.dispatchEvent(new CustomEvent("testsDone", {
+        detail: {
+          failures: getMessages('test.fail h2'),
+        },
+      }));
+    });
+  </script>
+
+</body>
+</html>
