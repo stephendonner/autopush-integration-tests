@@ -2,6 +2,7 @@
 
 
 PWD=`pwd`
+LINE="-----------------------------------------------"
 
 # PROD 
 #HOST="push.services.mozilla.com"
