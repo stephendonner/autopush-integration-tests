@@ -1,13 +1,9 @@
-import os
 import sys
 import json
 import requests
 
 
-SENTRY_TOKEN = os.environ['SENTRY_TOKEN']
-
-
-def request(url, method='GET', auth='', data=''):
+def request_rest(url, method='GET', auth='', data=''):
     headers = {'Content-Type': 'application/json'}
     if method == 'GET':
         return requests.get(url, auth=(auth, '')).json()

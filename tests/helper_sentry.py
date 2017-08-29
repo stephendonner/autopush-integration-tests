@@ -1,11 +1,9 @@
 import os
 import sys
 import json
-#from tests.request_helper import request
-from request_helper import request
+from tests.request_helper import request_rest
 
 
-SENTRY_TOKEN = os.environ['SENTRY_TOKEN']
 HOST_SENTRY = 'https://sentry.prod.mozaws.net'
 ORGANIZATION= 'operations'
 project_slug = 'Push/autopush-stage'
@@ -27,32 +25,21 @@ def url_issue_update(num_issue):
 def url_organizations():
     return '{0}/api/0/url_organizations/{1}/projects/'.format(HOST_SENTRY, ORGANIZATION) 
 
-def issue_resolve_all(issue_title):
+def issue_resolve_all(issue_title, SENTRY_TOKEN):
     url = url_issues_list(project_slug)
-    issues = request(url, 'GET', SENTRY_TOKEN)
-
+    issues = request_rest(url, 'GET', SENTRY_TOKEN)
+    
+    resp = format_json(issues)
     for issue in issues:
-        resp = format_json(issues)
         if issue['title'] == issue_title:
             if issue['status'] == 'unresolved':
                 url = url_issue_update(issue['id'])
-                resp = request(
+                resp = request_rest(
                     url, 'PUT', SENTRY_TOKEN, {"status": "resolved"})
                 resp = format_json(resp)
     return resp
 
-def issues_list_all():
+def issues_list_all(SENTRY_TOKEN):
     url = url_issues_list(project_slug)
-    resp = request(url, 'GET', SENTRY_TOKEN)
+    resp = request_rest(url, 'GET', SENTRY_TOKEN)
     #print(json.dumps(resp, indent=4))
-
-print('--------------------')
-print('BEFORE')
-print('--------------------')
-
-issues_list_all()
-
-print('--------------------')
-
-resp = issue_resolve_all('LogCheckError: LogCheck')
-print(resp)
