@@ -12,7 +12,7 @@ import sys
 import itertools
 import requests
 from six.moves import range
-from tests.output_helper import OutputHelper
+from tests.output import Output
 
 
 HOST_GITHUB = 'github.com'
@@ -44,7 +44,7 @@ class ReleaseNotes(object):
 
     def __init__(self, repo_owner, repo, environment):
 
-        self.output = OutputHelper()
+        self.output = Output()
         if all([repo_owner, repo, environment]):
             self._repo_owner = repo_owner
             self._repo = repo

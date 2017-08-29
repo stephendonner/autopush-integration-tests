@@ -7,7 +7,7 @@ LINE_DBL = '=================================================='
 NL = '\n'
 
 
-class OutputHelper(object):
+class Output(object):
 
     @staticmethod
     def get_header(label):
@@ -30,6 +30,6 @@ class OutputHelper(object):
 
 if __name__ == '__main__':
 
-    out = OutputHelper()
+    out = Output()
     print(out.get_header('YOUR HEADER'))
     print(out.get_sub_header('MY_SUB_HEADER'))
