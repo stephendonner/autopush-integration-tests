@@ -1,13 +1,16 @@
+import os
 import json
-import sys
 
 from tests.client import request_rest
 
 
+ISSUE_TITLE = 'LogCheckError: LogCheck'
 HOST_SENTRY = 'https://sentry.prod.mozaws.net'
+SENTRY_TOKEN = os.environ['SENTRY_TOKEN']
 ORGANIZATION = 'operations'
 project_slug = 'Push/autopush-stage'
 project_slug = 'autopush-stage'
+DELAY = 10
 
 
 def format_json(j):
@@ -32,28 +35,34 @@ def url_organizations():
         HOST_SENTRY, ORGANIZATION)
 
 
-def issue_verify(issue_title, SENTRY_TOKEN):
-    pass
-
-
 def issue_id_latest(issue_title, SENTRY_TOKEN):
     url = url_issues_list(project_slug)
     print(url)
     issues = request_rest(url, 'GET', SENTRY_TOKEN)
     resp = format_json(issues)
-    #print(resp)
 
     for issue in issues:
-        #print('{0} - {1} - {2}'.format(issue['title'], issue['id'], issue['status'])) # noqa
         if issue['title'] == issue_title:
             return issue['id']
-            #url = url_issue_update(issue['id'])
-            #print(issue['remote_ip'])
-            #resp = request_rest(
-            #    url, 'PUT', SENTRY_TOKEN, {"status":"resolved"})
         else:
             return None
 
+
+def issue_items(variables):
+    params = []
+    ip = ''
+    issue_id = issue_id_latest(ISSUE_TITLE, SENTRY_TOKEN)
+    url = '{0}/api/0/issues/{1}/events/latest/'.format(HOST_SENTRY, issue_id)
+    resp = request_rest(url, 'GET', SENTRY_TOKEN)
+    params.append(['release_project_name', resp['release']['projects'][0]['name']])
+    params.append(['release_version', resp['release']['version']])
+    params.append(['last_event', resp['release']['lastEvent']])
+    params.append(['error_value', resp['metadata']['value']])
+    params.append(['error_type', resp['metadata']['type']])
+    r = resp['context']['client_info']
+    ip = remote_ip(r)
+    params.append(['remote_ip', ip])
+    return params
 
 
 def issue_resolve_all(issue_title, SENTRY_TOKEN):
@@ -63,7 +72,6 @@ def issue_resolve_all(issue_title, SENTRY_TOKEN):
     resp = format_json(issues)
 
     for issue in issues:
-        #print('{0} - {1} - {2}'.format(issue['title'], issue['id'], issue['status'])) # noqa
         if issue['title'] == issue_title:
             url = url_issue_update(issue['id'])
             resp = request_rest(
@@ -76,3 +84,19 @@ def issues_list_all(SENTRY_TOKEN):
     url = url_issues_list(project_slug)
     resp = request_rest(url, 'GET', SENTRY_TOKEN)
     return json.dumps(resp, indent=4)
+
+
+def string_clean(s):
+        s = str(s)
+        return s.replace('"', '').replace("'", "")
+
+
+def remote_ip(obj_client_info):
+    remote_ip = []
+    for key, val in obj_client_info.iteritems():
+	key_new = string_clean(key)
+	val_new = string_clean(val)
+	if key_new == 'remote_ip':
+	    ips = val_new.split(',')
+	    remote_ip = [ip for ip in ips if '172' not in ip]
+    return remote_ip[0]
