@@ -11,10 +11,8 @@ def request_rest(url, method='GET', auth='', data=''):
     if method == 'GET':
         resp = requests.get(url, auth=(auth, ''))
     elif method == 'DELETE':
-        print('DELETE.....')
         resp = requests.delete(url, auth=(auth, ''), headers=headers)
     elif method == 'PUT':
-        print('PUT.....')
         resp = requests.put(
             url,
             auth=(auth, ''),
@@ -23,12 +21,5 @@ def request_rest(url, method='GET', auth='', data=''):
         )
     else:
         sys.exit('ERROR! REST method: {0} - not supported. Aborting!', method)
-
-    """
-    try:
-        json.loads(resp)
-    except ValueError as e:
-        sys.exit(e)
-    """
 
     return resp.json()

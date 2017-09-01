@@ -32,8 +32,33 @@ def url_organizations():
         HOST_SENTRY, ORGANIZATION)
 
 
+def issue_verify(issue_title, SENTRY_TOKEN):
+    pass
+
+
+def issue_id_latest(issue_title, SENTRY_TOKEN):
+    url = url_issues_list(project_slug)
+    print(url)
+    issues = request_rest(url, 'GET', SENTRY_TOKEN)
+    resp = format_json(issues)
+    #print(resp)
+
+    for issue in issues:
+        #print('{0} - {1} - {2}'.format(issue['title'], issue['id'], issue['status'])) # noqa
+        if issue['title'] == issue_title:
+            return issue['id']
+            #url = url_issue_update(issue['id'])
+            #print(issue['remote_ip'])
+            #resp = request_rest(
+            #    url, 'PUT', SENTRY_TOKEN, {"status":"resolved"})
+        else:
+            return None
+
+
+
 def issue_resolve_all(issue_title, SENTRY_TOKEN):
     url = url_issues_list(project_slug)
+    print(url)
     issues = request_rest(url, 'GET', SENTRY_TOKEN)
     resp = format_json(issues)
 

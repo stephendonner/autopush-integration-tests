@@ -1,0 +1,188 @@
+{
+    "context": {
+        "client_info": {
+            "'ami_id'": "'ami-1a434d61'",
+            "'authorization'": "[Filtered]",
+            "'message_ttl'": null,
+            "'python_version'": "'2.7.13 (c925e7381036, Jun 05 2017, 21:20:51)\n[PyPy 5.8.0 with GCC 6.2.0 20160901]'",
+            "'remote_ip'": "'63.245.221.198, 172.31.16.224'",
+            "'request_id'": "'669f653c-1ccd-4eeb-8df1-35123b02ba82'",
+            "'uri'": "'/v1/err/crit'",
+            "'user_agent'": "'python-requests/2.14.2'"
+        },
+        "log_format": "'Test Critical Message'",
+        "log_namespace": "'autopush.web.log_check.LogCheckHandler'",
+        "sys.argv": [
+            "'/usr/local/bin/autoendpoint'",
+            "'--config-endpoint'",
+            "'/settings/autopush.endpoint.ini'",
+            "'--config-shared'",
+            "'/settings/autopush.shared.ini'"
+        ]
+    },
+    "contexts": {},
+    "dateCreated": "2017-08-29T23:27:26Z",
+    "dateReceived": "2017-08-29T23:27:26Z",
+    "dist": null,
+    "entries": [
+        {
+            "data": {
+                "message": "LogCheckError: LogCheck"
+            },
+            "type": "message"
+        },
+        {
+            "data": {
+                "excOmitted": null,
+                "hasSystemFrames": false,
+                "values": [
+                    {
+                        "mechanism": null,
+                        "module": "autopush.exceptions",
+                        "rawStacktrace": null,
+                        "stacktrace": {
+                            "frames": [
+                                {
+                                    "absPath": "/app/autopush/web/log_check.py",
+                                    "colNo": null,
+                                    "context": [
+                                        [
+                                            38,
+                                            "                           client_info=self._client_info)"
+                                        ],
+                                        [
+                                            39,
+                                            "            self._write_response(418, 999, message=\"ERROR:Success\","
+                                        ],
+                                        [
+                                            40,
+                                            "                                 error=\"Test Error\")"
+                                        ],
+                                        [
+                                            41,
+                                            "        if 'crit' in err_type:"
+                                        ],
+                                        [
+                                            42,
+                                            "            try:"
+                                        ],
+                                        [
+                                            43,
+                                            "                raise LogCheckError(\"LogCheck\")"
+                                        ],
+                                        [
+                                            44,
+                                            "            except LogCheckError:"
+                                        ],
+                                        [
+                                            45,
+                                            "                self.log.failure(format=\"Test Critical Message\","
+                                        ],
+                                        [
+                                            46,
+                                            "                                 status_code=418, errno=0,"
+                                        ],
+                                        [
+                                            47,
+                                            "                                 client_info=self._client_info)"
+                                        ],
+                                        [
+                                            48,
+                                            "                self._write_response(418, 999, message=\"FAILURE:Success\","
+                                        ]
+                                    ],
+                                    "errors": null,
+                                    "filename": "autopush/web/log_check.py",
+                                    "function": "get",
+                                    "inApp": false,
+                                    "instructionAddr": null,
+                                    "lineNo": 43,
+                                    "module": "autopush.web.log_check",
+                                    "package": null,
+                                    "platform": null,
+                                    "symbol": null,
+                                    "symbolAddr": null,
+                                    "vars": {
+                                        "err_type": "u'crit'",
+                                        "self": "<autopush.web.log_check.LogCheckHandler object at 0x000000000320ea30>"
+                                    }
+                                }
+                            ],
+                            "framesOmitted": null,
+                            "hasSystemFrames": false,
+                            "registers": null
+                        },
+                        "threadId": null,
+                        "type": "LogCheckError",
+                        "value": "LogCheck"
+                    }
+                ]
+            },
+            "type": "exception"
+        }
+    ],
+    "errors": [],
+    "eventID": "cdbdcb0a01594e418b7b3fc1df92b474",
+    "groupID": "645211",
+    "id": "11809495",
+    "message": "LogCheckError: LogCheck",
+    "metadata": {
+        "type": "LogCheckError",
+        "value": "LogCheck"
+    },
+    "nextEventID": null,
+    "packages": {
+        "python": "2.7.13"
+    },
+    "platform": "python",
+    "previousEventID": "11809488",
+    "release": {
+        "authors": [],
+        "commitCount": 0,
+        "data": {},
+        "dateCreated": "2017-08-29T18:31:53.223Z",
+        "dateReleased": null,
+        "firstEvent": "2017-08-29T18:31:53.223Z",
+        "lastCommit": null,
+        "lastEvent": "2017-08-29T23:27:26Z",
+        "newGroups": 0,
+        "owner": null,
+        "projects": [
+            {
+                "name": "autopush-stage",
+                "slug": "autopush-stage"
+            }
+        ],
+        "ref": null,
+        "shortVersion": "1.35.1",
+        "url": null,
+        "version": "1.35.1"
+    },
+    "sdk": {
+        "name": "raven-python",
+        "upstream": {
+            "isNewer": false,
+            "name": "raven-python",
+            "url": "https://docs.sentry.io/clients/python/"
+        },
+        "version": "6.1.0"
+    },
+    "size": 2175,
+    "tags": [
+        {
+            "key": "level",
+            "value": "error"
+        },
+        {
+            "key": "release",
+            "value": "1.35.1"
+        },
+        {
+            "key": "server_name",
+            "value": "ip-172-31-22-0"
+        }
+    ],
+    "type": "error",
+    "user": null,
+    "userReport": null
+}
