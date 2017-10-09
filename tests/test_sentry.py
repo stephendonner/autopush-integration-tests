@@ -15,9 +15,7 @@ from tests.sentry import (
 from tests.timeout import verify_timeout
 
 
-PROJECT_SLUG = 'autopush-stage'
 ISSUE_TITLE = 'LogCheckError: LogCheck'
-RELEASE_VERSION = '1.35.1'
 
 
 class TestSentry(object):
@@ -32,8 +30,10 @@ class TestSentry(object):
         # this test relies on remote service (Sentry)
         # give ample time for issue to land before teardown
         print('\nTEARDOWN: resolving any LogCheckErrors...\n')
-        # time.sleep(DELAY)
-        # issue_resolve_all(ISSUE_TITLE, SENTRY_TOKEN, PROJECT_SLUG)
+        """
+        time.sleep(DELAY)
+        issue_resolve_all(ISSUE_TITLE, SENTRY_TOKEN, project_slug)
+        """
 
 
     def assert_ok(self, msg='assert OK'):
@@ -41,15 +41,8 @@ class TestSentry(object):
         return True
 
 
-    # TODO: replace this w/ a call to github API
-    # we should be doing this in conftest for the other test
-    # anyway
-    def github_release_version(self):
-        return RELEASE_VERSION
-
-
     @pytest.mark.nondestructive
-    def test_sentry_check(self, variables, request):
+    def test_sentry_check(self, variables, request, project_slug, release_version):
 
         # verify error on autopush side
         url_push_host_updates = variables['HOST_UPDATES']
@@ -64,7 +57,7 @@ class TestSentry(object):
         
         # verify error Sentry side
         ip_ext = ipgetter.myip()
-        issues = issue_items(variables, PROJECT_SLUG, ISSUE_TITLE)
+        issues = issue_items(variables, project_slug, ISSUE_TITLE)
         for item in issues:
             if item[0] == 'remote_ip':
                 ip_remote = item[1]
@@ -73,15 +66,16 @@ class TestSentry(object):
                     'IP addresses don\'t match!'
             if item[0] == 'release_project_name':
                 release_project_name = item[1]
-                assert release_project_name == PROJECT_SLUG and \
+                assert release_project_name == project_slug and \
                     self.assert_ok('Project slug matches!'), \
                     'Project slug doesn\'t match!'
             if item[0] == 'release_version':
                 release_version_sentry = item[1]
-                release_version_github = self.github_release_version()
+                release_version_github = release_version 
                 assert release_version_sentry == release_version_github and \
                     self.assert_ok('Release version matches!'), \
                     'Release version doesn\'t match!'
+            """
             if item[0] == 'last_event':
                 last_event = item[1]
                 print('last_event', last_event)
@@ -89,3 +83,4 @@ class TestSentry(object):
                 assert time_verified and \
                     self.assert_ok('Last event within time boundary!'), \
                     'Last event not within time boundary!'
+            """

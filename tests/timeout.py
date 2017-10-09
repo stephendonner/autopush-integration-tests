@@ -6,7 +6,8 @@ import datetime
 TIMEOUT_MINS = 5
 UTCNOW = datetime.datetime.utcnow()
 
-def verify_timeout(test_start_time, sentry_log_time):
+#def verify_timeout(test_start_time, sentry_log_time):
+def verify_timeout(sentry_log_time):
 
     
     # BOGUS values for testing

@@ -8,4 +8,4 @@ WORKDIR /app
 
 RUN pip install tox
 
-CMD tox -e $TEST_EN
+CMD tox -e $TEST_ENV
