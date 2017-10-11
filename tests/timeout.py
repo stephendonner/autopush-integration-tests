@@ -25,20 +25,13 @@ def verify_timeout(test_start, sentry_log_time):
   
     ts_test_start = utc_to_timestamp(test_start)
     ts_sentry_log_time = utc_to_timestamp(sentry_log_time)
-    print('TS TEST START: {0}'.format(ts_test_start))
-    print('TS SENTRY: {0}'.format(ts_sentry_log_time))
 
-    print('DIFF_ALLOWED: {0}'.format(DIFF_ALLOWED))
-
-    # take abs value in case of clock skew
+    # take abs value to allow for some clock skew
     diff_actual = abs((int(ts_test_start) - int(ts_sentry_log_time)))
 
-    print('DIFF_ACTUAL: {0}'.format(diff_actual))
     if diff_actual < DIFF_ALLOWED:  
-        # print('true')
         return True
     else:
-        # print('false')
         return False
 
 

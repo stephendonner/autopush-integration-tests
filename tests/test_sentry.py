@@ -41,7 +41,7 @@ class TestSentry(object):
         """ Force an error on autopush server, then check that
         it gets logged to Sentry. """
 
-        # verify error on autopush side
+        # force and verify error on autopush host 
         url_push_host_updates = variables['HOST_UPDATES']
         url = 'https://{0}/v1/err/crit'.format(url_push_host_updates)
         UTC_NOW = datetime.datetime.utcnow()
@@ -54,30 +54,32 @@ class TestSentry(object):
             self.assert_ok('Test Failure - OK'), \
             'Unexpected error message!'
 
-        # verify error Sentry side
-        ip_ext = ipgetter.myip()
+        # verify error registers on Sentry host 
         issues = issue_items(variables, project_slug, ISSUE_TITLE)
         for item in issues:
+            # verify error originates from this host
             if item[0] == 'remote_ip':
+                ip_ext = ipgetter.myip()
                 ip_remote = item[1]
                 assert ip_ext == ip_remote and \
                     self.assert_ok('IP address match!'), \
                     'IP addresses don\'t match!'
+            # verify release_project_name
             if item[0] == 'release_project_name':
                 release_project_name = item[1]
                 assert release_project_name == project_slug and \
                     self.assert_ok('Project slug matches!'), \
                     'Project slug doesn\'t match!'
+            # verify autopush release_version
             if item[0] == 'release_version':
                 release_version_sentry = item[1]
                 release_version_github = release_version
                 assert release_version_sentry == release_version_github and \
                     self.assert_ok('Release version matches!'), \
                     'Release version doesn\'t match!'
+            # verify this event falls within an allowable time boundary of test start
             if item[0] == 'last_event':
                 sentry_last_event = item[1]
-                print('UTC_NOW: {0}'.format(UTC_NOW))
-                print('SENTRY_LAST_EVENT: {0}'.format(sentry_last_event))
                 time_verified = verify_timeout(UTC_NOW, sentry_last_event)
                 assert time_verified and \
                     self.assert_ok('Last event within time boundary!'), \
