@@ -1,10 +1,7 @@
-import os
-import time
-import json
-
-import pytest
+import datetime
 import ipgetter
-from raven import Client
+import pytest
+
 from tests.client import request_rest
 from tests.sentry import (
     issue_resolve_all,
@@ -35,18 +32,19 @@ class TestSentry(object):
         issue_resolve_all(ISSUE_TITLE, SENTRY_TOKEN, project_slug)
         """
 
-
     def assert_ok(self, msg='assert OK'):
         print(msg)
         return True
 
-
     @pytest.mark.nondestructive
-    def test_sentry_check(self, variables, request, project_slug, release_version):
+    def test_sentry_check(self, variables, request, project_slug, release_version): # noqa
 
         # verify error on autopush side
         url_push_host_updates = variables['HOST_UPDATES']
-        url= 'https://{0}/v1/err/crit'.format(url_push_host_updates)
+        url = 'https://{0}/v1/err/crit'.format(url_push_host_updates)
+
+        UTCNOW = datetime.datetime.utcnow()
+
         resp = request_rest(url, 'GET')
         assert resp['message'] == 'FAILURE:Success' and \
             self.assert_ok('FAILURE:Success'), \
@@ -54,7 +52,7 @@ class TestSentry(object):
         assert resp['error'] == 'Test Failure' and \
             self.assert_ok('Test Failure - OK'), \
             'Unexpected error message!'
-        
+
         # verify error Sentry side
         ip_ext = ipgetter.myip()
         issues = issue_items(variables, project_slug, ISSUE_TITLE)
@@ -71,15 +69,16 @@ class TestSentry(object):
                     'Project slug doesn\'t match!'
             if item[0] == 'release_version':
                 release_version_sentry = item[1]
-                release_version_github = release_version 
+                release_version_github = release_version
                 assert release_version_sentry == release_version_github and \
                     self.assert_ok('Release version matches!'), \
                     'Release version doesn\'t match!'
-            """
             if item[0] == 'last_event':
-                last_event = item[1]
-                print('last_event', last_event)
-                time_verified = verify_timeout(last_event)
+                sentry_last_event = item[1]
+                print('last_event: {0}'.format(sentry_last_event))
+                time_verified = verify_timeout(UTCNOW, sentry_last_event)
+                print('time_verified: {0}'.format(time_verified))
+            """
                 assert time_verified and \
                     self.assert_ok('Last event within time boundary!'), \
                     'Last event not within time boundary!'

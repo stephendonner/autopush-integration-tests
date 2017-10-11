@@ -9,28 +9,6 @@ GITHUB_ORG = 'mozilla-services'
 GITHUB_REPO = 'autopush'
 
 
-@pytest.fixture(scope='session')
-def rel_num():
-    gbl.release_num = ''
-
-
-def pytest_addoption(parser):
-    parser.addini('ticket_num', help='Ticket number')
-    parser.addoption(
-        '--ticket-num',
-        metavar='ticket',
-        default=os.getenv('TICKET_NUM', None),
-        help='Ticket number the tests should use')
-
-
-@pytest.fixture(scope='session')
-def ticket_num():
-    """Returns the ticket number"""
-    # config = request.config
-    # return config.getoption('ticket_num')
-    gbl.ticket_num = '12345668'
-
-
 def get_tags(url):
     """Get all tags as json from Github API."""
 
