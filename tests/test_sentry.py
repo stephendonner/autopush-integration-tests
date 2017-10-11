@@ -38,14 +38,15 @@ class TestSentry(object):
 
     @pytest.mark.nondestructive
     def test_sentry_check(self, variables, request, project_slug, release_version): # noqa
+        """ Force an error on autopush server, then check that
+        it gets logged to Sentry. """
 
         # verify error on autopush side
         url_push_host_updates = variables['HOST_UPDATES']
         url = 'https://{0}/v1/err/crit'.format(url_push_host_updates)
-
-        UTCNOW = datetime.datetime.utcnow()
-
+        UTC_NOW = datetime.datetime.utcnow()
         resp = request_rest(url, 'GET')
+
         assert resp['message'] == 'FAILURE:Success' and \
             self.assert_ok('FAILURE:Success'), \
             'Forced /err/crit unsuccessful!'
@@ -75,11 +76,9 @@ class TestSentry(object):
                     'Release version doesn\'t match!'
             if item[0] == 'last_event':
                 sentry_last_event = item[1]
-                print('last_event: {0}'.format(sentry_last_event))
-                time_verified = verify_timeout(UTCNOW, sentry_last_event)
-                print('time_verified: {0}'.format(time_verified))
-            """
+                print('UTC_NOW: {0}'.format(UTC_NOW))
+                print('SENTRY_LAST_EVENT: {0}'.format(sentry_last_event))
+                time_verified = verify_timeout(UTC_NOW, sentry_last_event)
                 assert time_verified and \
                     self.assert_ok('Last event within time boundary!'), \
                     'Last event not within time boundary!'
-            """
