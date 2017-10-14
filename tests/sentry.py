@@ -1,13 +1,10 @@
-import os
 import json
 
 from tests.client import request_rest
+from conftest import (HOST_SENTRY, SENTRY_TOKEN)
 
 
-HOST_SENTRY = os.environ['HOST_SENTRY']
-SENTRY_TOKEN = os.environ['SENTRY_TOKEN']
 ORGANIZATION = 'operations'
-DELAY = 10
 
 
 def format_json(j):

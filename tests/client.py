@@ -1,25 +1,38 @@
-import sys
 import json
+import time
 import requests
+
+
+WAIT = 7
+
+
+class UnsupportedMethodError(Exception):
+    def __init__(self, method):
+        msg = 'ERROR! REST method: {0} - unsupported. Aborting!'.format(method)
+        Exception.__init__(self, msg)
 
 
 def request_rest(url, method='GET', auth='', data=''):
 
-    resp = ''
     headers = {'Content-Type': 'application/json'}
 
     if method == 'GET':
-        resp = requests.get(url, auth=(auth, ''))
+        r = requests.get(url, auth=(auth, ''))
     elif method == 'DELETE':
-        resp = requests.delete(url, auth=(auth, ''), headers=headers)
+        r = requests.delete(url, auth=(auth, ''), headers=headers)
     elif method == 'PUT':
-        resp = requests.put(
+        r = requests.put(
             url,
             auth=(auth, ''),
             data=json.dumps(data),
             headers=headers
         )
     else:
-        sys.exit('ERROR! REST method: {0} - not supported. Aborting!', method)
+        raise UnsupportedMethodError(method)
 
-    return resp.json()
+    # Sentry occasionally lags. Allow some time for update.
+    time.sleep(WAIT)
+    try:
+        return r.json()
+    except:
+        return json.loads(r)

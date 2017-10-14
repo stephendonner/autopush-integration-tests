@@ -4,7 +4,8 @@ pytest-xdist==1.20.1
 requests==2.18.4
 flake8==3.3.0
 raven
-ipgetter=0.6
+ipgetter==0.6
 six==1.11.0
 tox==2.9.1
+outlawg
 python-dateutil
